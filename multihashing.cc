@@ -36,6 +36,7 @@ extern "C" {
     #include "fresh.h"
     #include "zr5.h"
     #include "Lyra2RE.h"
+    #include "argon2/argon2.h"
 }
 
 #include "boolberry.h"
@@ -241,6 +242,31 @@ Handle<Value> yescrypt(const Arguments& args) {
    char output[32];
 
    yescrypt_hash(input, output);
+
+   Buffer* buff = Buffer::New(output, 32);
+   return scope.Close(buff->handle_);
+}
+
+Handle<Value> argon2d(const Arguments& args) {
+   HandleScope scope;
+
+    if (args.Length() < 1)
+        return except("You must provide one argument.");
+
+   Local<Object> target = args[0]->ToObject();
+
+   if(!Buffer::HasInstance(target))
+       return except("Argument should be a buffer object.");
+
+   char * input = Buffer::Data(target);
+   uint32_t input_len = Buffer::Length(target);
+   char output[32];
+   uint32_t output_len = 32;
+   uint32_t t_cost = 1; // 1 iteration
+   uint32_t m_cost = 4096; // use 4MB
+   uint32_t parallelism = 1; // 1 thread, 2 lanes
+
+   argon2d_hash_raw(t_cost, m_cost, parallelism, input, input_len, input, input_len, output, output_len);
 
    Buffer* buff = Buffer::New(output, 32);
    return scope.Close(buff->handle_);
@@ -859,6 +885,7 @@ void init(Handle<Object> exports) {
 	exports->Set(String::NewSymbol("s3"), FunctionTemplate::New(s3)->GetFunction());
 	exports->Set(String::NewSymbol("dcrypt"), FunctionTemplate::New(dcrypt)->GetFunction());
     exports->Set(String::NewSymbol("c11"), FunctionTemplate::New(c11)->GetFunction());
+    exports->Set(String::NewSymbol("argon2d"), FunctionTemplate::New(argon2d)->GetFunction());
 }
 
 NODE_MODULE(multihashing, init)
