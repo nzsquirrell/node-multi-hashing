@@ -901,6 +901,7 @@ void init(Handle<Object> exports) {
     exports->Set(String::NewSymbol("yescrypt"), FunctionTemplate::New(yescrypt)->GetFunction());
     exports->Set(String::NewSymbol("lyra2re"), FunctionTemplate::New(lyra2re)->GetFunction());
     exports->Set(String::NewSymbol("lyra2re2"), FunctionTemplate::New(lyra2re2)->GetFunction());
+    exports->Set(String::NewSymbol("lyra2zoin"), FunctionTemplate::New(lyra2zoin)->GetFunction());
     exports->Set(String::NewSymbol("c11"), FunctionTemplate::New(c11)->GetFunction());
 	exports->Set(String::NewSymbol("s3"), FunctionTemplate::New(s3)->GetFunction());
 	exports->Set(String::NewSymbol("dcrypt"), FunctionTemplate::New(dcrypt)->GetFunction());
