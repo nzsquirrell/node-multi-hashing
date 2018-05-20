@@ -37,6 +37,7 @@
                 "dcrypt.c",
                 "jh.c",
 				"Lyra2.c",
+				"Lyra2Z.c",
 				"Sponge.c",
 				"c11.c",
                 "sha3/sph_hefty1.c",
@@ -79,7 +80,7 @@
             "cflags": [
                 "-D_GNU_SOURCE -fPIC -Ofast -flto -fuse-linker-plugin -funroll-loops -funswitch-loops -fpeel-loops"
             ],
-            "cflags!": [ 
+            "cflags!": [
                 "-O2", "-fno-strict-aliasing", "-fno-tree-vrp", "-fno-omit-frame-pointer"
             ],
             "ldflags": [
