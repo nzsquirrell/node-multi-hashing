@@ -38,6 +38,8 @@ extern "C" {
     #include "Lyra2RE.h"
     #include "argon2/argon2.h"
     #include "Lyra2Z.h"
+    #include "x16r.h"
+    #include "x16s.h"
 }
 
 #include "boolberry.h"
@@ -846,8 +848,6 @@ Handle<Value> zr5(const Arguments& args) {
     return scope.Close(buff->handle_);
 }
 
-
-
 Handle<Value> c11(const Arguments& args) {
     HandleScope scope;
 
@@ -865,6 +865,50 @@ Handle<Value> c11(const Arguments& args) {
     uint32_t input_len = Buffer::Length(target);
 
     c11_hash(input, output);
+
+    Buffer* buff = Buffer::New(output, 32);
+    return scope.Close(buff->handle_);
+}
+
+Handle<Value> x16r(const Arguments& args) {
+    HandleScope scope;
+
+    if (args.Length() < 1)
+        return except("You must provide one argument.");
+
+    Local<Object> target = args[0]->ToObject();
+
+    if(!Buffer::HasInstance(target))
+        return except("Argument should be a buffer object.");
+
+    char * input = Buffer::Data(target);
+    char output[32];
+
+    uint32_t input_len = Buffer::Length(target);
+
+    x16r_hash(input, output, input_len);
+
+    Buffer* buff = Buffer::New(output, 32);
+    return scope.Close(buff->handle_);
+}
+
+Handle<Value> x16s(const Arguments& args) {
+    HandleScope scope;
+
+    if (args.Length() < 1)
+        return except("You must provide one argument.");
+
+    Local<Object> target = args[0]->ToObject();
+
+    if(!Buffer::HasInstance(target))
+        return except("Argument should be a buffer object.");
+
+    char * input = Buffer::Data(target);
+    char output[32];
+
+    uint32_t input_len = Buffer::Length(target);
+
+    x16s_hash(input, output, input_len);
 
     Buffer* buff = Buffer::New(output, 32);
     return scope.Close(buff->handle_);
@@ -907,6 +951,8 @@ void init(Handle<Object> exports) {
 	exports->Set(String::NewSymbol("dcrypt"), FunctionTemplate::New(dcrypt)->GetFunction());
     exports->Set(String::NewSymbol("c11"), FunctionTemplate::New(c11)->GetFunction());
     exports->Set(String::NewSymbol("argon2d"), FunctionTemplate::New(argon2d)->GetFunction());
+    exports->Set(String::NewSymbol("x16r"), FunctionTemplate::New(x16r)->GetFunction());
+    exports->Set(String::NewSymbol("x16s"), FunctionTemplate::New(x16s)->GetFunction());
 }
 
 NODE_MODULE(multihashing, init)
