@@ -275,6 +275,48 @@ Handle<Value> argon2d(const Arguments& args) {
    return scope.Close(buff->handle_);
 }
 
+Handle<Value> argon2d500(const Arguments& args) {
+   HandleScope scope;
+
+    if (args.Length() < 1)
+        return except("You must provide one argument.");
+
+   Local<Object> target = args[0]->ToObject();
+
+   if(!Buffer::HasInstance(target))
+       return except("Argument should be a buffer object.");
+
+   char * input = Buffer::Data(target);
+   uint32_t input_len = Buffer::Length(target);
+   char output[32];
+   uint32_t output_len = 32;
+
+   argon2_context context;
+   context.out = (uint8_t *)output;
+   context.outlen = (uint32_t)output_len;
+   context.pwd = (uint8_t *)Buffer::Data(target);
+   context.pwdlen = (uint32_t)Buffer::Length(target);
+   context.salt = (uint8_t *)Buffer::Data(target);
+   context.saltlen = (uint32_t)Buffer::Length(target);
+   context.secret = NULL;
+   context.secretlen = 0;
+   context.ad = NULL;
+   context.adlen = 0;
+   context.allocate_cbk = NULL;
+   context.free_cbk = NULL;
+   context.flags = ARGON2_DEFAULT_FLAGS;
+   context.m_cost = 500;  // Memory in KiB (512KB)
+   context.lanes = 8;     // Degree of Parallelism
+   context.threads = 1;   // Threads
+   context.t_cost = 2;    // Iterations
+   context.version = ARGON2_VERSION_10;
+
+   argon2_ctx(&context, Argon2_d);
+
+   Buffer* buff = Buffer::New(output, 32);
+   return scope.Close(buff->handle_);
+}
+
 Handle<Value> keccak(const Arguments& args) {
     HandleScope scope;
 
@@ -951,6 +993,7 @@ void init(Handle<Object> exports) {
 	exports->Set(String::NewSymbol("dcrypt"), FunctionTemplate::New(dcrypt)->GetFunction());
     exports->Set(String::NewSymbol("c11"), FunctionTemplate::New(c11)->GetFunction());
     exports->Set(String::NewSymbol("argon2d"), FunctionTemplate::New(argon2d)->GetFunction());
+    exports->Set(String::NewSymbol("argon2d500"), FunctionTemplate::New(argon2d500)->GetFunction());
     exports->Set(String::NewSymbol("x16r"), FunctionTemplate::New(x16r)->GetFunction());
     exports->Set(String::NewSymbol("x16s"), FunctionTemplate::New(x16s)->GetFunction());
 }
