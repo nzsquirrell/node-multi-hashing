@@ -855,6 +855,7 @@ NAN_MODULE_INIT(init) {
     Nan::Set(target, Nan::New("whirlpoolx").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(whirlpoolx)).ToLocalChecked());
     Nan::Set(target, Nan::New("lyra2re").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(lyra2re)).ToLocalChecked());
     Nan::Set(target, Nan::New("lyra2rev2").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(lyra2rev2)).ToLocalChecked());
+    Nan::Set(target, Nan::New("lyra2rev3").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(lyra2rev3)).ToLocalChecked());
     Nan::Set(target, Nan::New("lyra2z330").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(lyra2z330)).ToLocalChecked());
     Nan::Set(target, Nan::New("c11").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(c11)).ToLocalChecked());
     Nan::Set(target, Nan::New("x16r").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(x16r)).ToLocalChecked());
