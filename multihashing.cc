@@ -45,6 +45,7 @@ extern "C" {
     #include "x22i.h"
     #include "x25x.h"
     #include "allium.h"
+    #include "bitcore.h"
 }
 
 #include "boolberry.h"
@@ -902,6 +903,26 @@ NAN_METHOD(allium) {
     info.GetReturnValue().Set(Nan::NewBuffer(output, 32).ToLocalChecked());
 }
 
+NAN_METHOD(bitcore) {
+    if (info.Length() < 1)
+        return THROW_ERROR_EXCEPTION("You must provide one argument.");
+
+    Local<Object> target = Nan::To<Object>(info[0]).ToLocalChecked();
+
+    if(!Buffer::HasInstance(target))
+        return THROW_ERROR_EXCEPTION("Argument should be a buffer object.");
+
+    char * input = Buffer::Data(target);
+    char *output = (char*) malloc(sizeof(char) * 32);
+
+    uint32_t input_len = Buffer::Length(target);
+
+    timetravel10_hash(input, output, input_len);
+
+    info.GetReturnValue().Set(Nan::NewBuffer(output, 32).ToLocalChecked());
+}
+
+
 NAN_MODULE_INIT(init) {
     Nan::Set(target, Nan::New("quark").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(quark)).ToLocalChecked());
     Nan::Set(target, Nan::New("x11").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(x11)).ToLocalChecked());
@@ -944,6 +965,7 @@ NAN_MODULE_INIT(init) {
     Nan::Set(target, Nan::New("x22i").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(x22i)).ToLocalChecked());
     Nan::Set(target, Nan::New("x25x").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(x25x)).ToLocalChecked());
     Nan::Set(target, Nan::New("allium").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(allium)).ToLocalChecked());
+    Nan::Set(target, Nan::New("bitcore").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(bitcore)).ToLocalChecked());
 }
 
 NODE_MODULE(multihashing, init)
