@@ -88,6 +88,7 @@
 				"x25x.c",
 				"allium.c",
 				"bitcore.c",
+				"x21s.c",
             ],
             "include_dirs": [
                 "crypto",
